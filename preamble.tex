@@ -1,6 +1,9 @@
-\usepackage[left=2cm, right=2cm, top=2cm]{geometry}
+\usepackage[left=2cm, right=2cm]{geometry}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{fontspec}
 
 \pagestyle{fancy}
 \fancyhf{} % sets both header and footer to nothing
@@ -13,3 +16,13 @@
 \newcommand{\CVNote}{Compiled on {\today}, available at \href{\CVWebpageCV}{\CVWebpageCV}.}
 \newcommand{\CVWebpage}{github.com/eherbert}
 \newcommand{\CVWebpageCV}{github.com/eherbert/cv.git}
+
+%\setmainfont{[Tinos-Regular.ttf]}
+
+\newfontfamily\titlefont[]{[Tinos-Bold.ttf]}
+\newfontfamily\headingfont[]{[Tinos-Regular.ttf]}
+\titleformat*{\section}{\LARGE\headingfont}
+\titleformat*{\subsection}{\Large\headingfont}
+\titleformat*{\subsubsection}{\large\headingfont}
+
+\renewcommand{\maketitlehooka}{\LARGE\titlefont}
