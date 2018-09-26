@@ -1,17 +1,35 @@
 \documentclass[letterpaper,10pt,oneside]{article}
 
-\input{preamble.tex}
-\input{title.tex}
+\input{./parts/preamble.tex}
+
+%%% CUSTOM COMMANDS %%%
+% \Title
+% \SubTitle 
+% \Body
+% \Gap
+% \BigGap
+% \Section
+% \SubSection
+% \Detail
+% \BulletItem
+% \SubBulletItem
+% \Entry
+% \Item
+% \SubItem 
+% \NumberedItem
+% \Hide
 
 \begin{document}
-
-\maketitle
 \thispagestyle{fancy}
 
-Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. Lots of text. 
+\input{./parts/title.tex}
 
-\section{A section}
-\subsection{A subsection}
-\subsubsection{A subsubsection}
+\begin{Body}
+
+\input{./parts/education.tex}
+\input{./parts/skills.tex}
+\input{./parts/research_experience.tex}
+
+\end{Body}
 
 \end{document}
