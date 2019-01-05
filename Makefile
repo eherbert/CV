@@ -6,6 +6,7 @@
 make:
 	xelatex -shell-escape cv.tex
 	xelatex -shell-escape resume.tex
+	xelatex -shell-escape cover_letter.tex
 
 clean:
 	rm -rf *.blg
@@ -29,3 +30,4 @@ clean:
 read:
 	evince cv.pdf &
 	evince resume.pdf &
+	evince cover_letter.pdf &
