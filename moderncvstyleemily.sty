@@ -44,17 +44,16 @@
 \renewcommand*{\emailsymbol}{\marvosymbol{66}~}
 \renewcommand*{\homepagesymbol}{{\Large\marvosymbol{205}}~}
 
-
 %-------------------------------------------------------------------------------
 %                resume style definition
 %-------------------------------------------------------------------------------
 % fonts
-\renewcommand*{\namefont}{\fontsize{34}{36}\mdseries\upshape}
-\renewcommand*{\titlefont}{\LARGE\mdseries\slshape}
-\renewcommand*{\addressfont}{\small\mdseries\slshape}
+\renewcommand*{\namefont}{\Huge\bfseries\upshape}
+\renewcommand*{\titlefont}{\Huge\mdseries\upshape}
+\renewcommand*{\addressfont}{\normalsize\mdseries\upshape}
 \renewcommand*{\quotefont}{\large\slshape}
-\renewcommand*{\sectionfont}{\Large\mdseries\upshape}
-\renewcommand*{\subsectionfont}{\large\mdseries\upshape}
+\renewcommand*{\sectionfont}{\Large\bfseries\upshape}
+\renewcommand*{\subsectionfont}{\large\upshape\fontseries{sb}\selectfont}
 \renewcommand*{\hintfont}{}
 
 % styles
@@ -154,26 +153,82 @@
     {{\centering\begin{minipage}{\quotewidth}\centering\quotestyle{\@quote}\end{minipage}\\[2.5em]}}%
   \par}% to avoid weird spacing bug at the first section if no blank line is left after \makecvtitle
 
+% commands
+\newcommand*{\maketitlesymbol}{%
+    {~~~{\rmfamily\textbullet}~~~}}% the \rmfamily is required to force Latin Modern fonts when using sans serif, as OMS/lmss/m/n is not defined and gets substituted by OMS/cmsy/m/n
+%   internal command to add an element to the footer
+%   it collects the elements in a temporary box, and checks when to flush the box
+\newsavebox{\maketitlebox}%
+\newsavebox{\maketitletempbox}%
+\newlength{\maketitlewidth}%
+\newlength{\maketitleboxwidth}%
+\newif\if@firstmaketitleelement\@firstmaketitleelementtrue%
+%   adds an element to the maketitle, separated by maketitlesymbol
+%   usage: \addtomaketitle[maketitlesymbol]{element}
+\newcommand*{\addtomaketitle}[2][\maketitlesymbol]{%
+  \if@firstmaketitleelement%
+    \savebox{\maketitletempbox}{\usebox{\maketitlebox}#2}%
+  \else%
+    \savebox{\maketitletempbox}{\usebox{\maketitlebox}#1#2}\fi%
+  \settowidth{\maketitleboxwidth}{\usebox{\maketitletempbox}}%
+  \ifnum\maketitleboxwidth<\maketitlewidth%
+    \savebox{\maketitlebox}{\usebox{\maketitletempbox}}%
+    \@firstmaketitleelementfalse%
+  \else%
+    \flushmaketitle{}\\%
+    \savebox{\maketitlebox}{#2}%
+    \savebox{\maketitletempbox}{#2}%
+    \settowidth{\maketitleboxwidth}{\usebox{\maketitlebox}}%
+    \@firstmaketitleelementfalse\fi}
+%   internal command to flush the maketitle
+\newcommand*{\flushmaketitle}{%
+  \strut\usebox{\maketitlebox}%
+  \savebox{\maketitlebox}{}%
+  \savebox{\maketitletempbox}{}%
+  \setlength{\maketitleboxwidth}{0pt}}
+\renewcommand*{\maketitle}{%
+  \setlength{\maketitlewidth}{0.8\textwidth}%
+  \hfil%
+  \parbox{\maketitlewidth}{%
+    \centering%
+    % name and title
+    \namestyle{\@firstname~\@familyname}%
+    \ifthenelse{\isundefined{\@title}}{}{\titlestyle{~~\@title}}\\%
+    % detailed information
+    \addressfont\color{color2}%
+    \ifthenelse{\isundefined{\@addressstreet}}{}{\addtomaketitle{\@addressstreet}%
+      \ifthenelse{\equal{\@addresscity}{}}{}{\addtomaketitle[~--~]{\@addresscity}}\flushmaketitle\@firstmaketitleelementtrue\\}% if \addresstreet is defined, \addresscity will always be defined but could be empty
+    \ifthenelse{\isundefined{\@mobile}}{}{\addtomaketitle{\@mobile}}%
+    \ifthenelse{\isundefined{\@phone}}{}{\addtomaketitle{\@phone}}%
+    \ifthenelse{\isundefined{\@fax}}{}{\addtomaketitle{\@fax}}%
+    \ifthenelse{\isundefined{\@email}}{}{\addtomaketitle{\emaillink{\@email}}}%
+        \ifthenelse{\isundefined{\@homepage}}{}{%
+	\ifthenelse{\equal{\@homepagetitle}{}}% \homepagetitle could be empty
+	{\addtomaketitle{\httplink{\@homepage}}}%
+	{\addtomaketitle{\httplink[\@homepagetitle]{\@homepage}}}}%
+    \ifthenelse{\isundefined{\@extrainfo}}{}{\addtomaketitle{\@extrainfo}}%
+    \flushmaketitle}\\[2.5em]}% need to force a \par after this to avoid weird spacing bug at the first section if no blank line is left after \maketitle
+
+
 \newlength{\baseletterheight}
 \settoheight{\baseletterheight}{\sectionstyle{o}}
 \setlength{\baseletterheight}{\baseletterheight-0.95ex}
+
 \renewcommand*{\section}[1]{%
   \par\addvspace{2.5ex}%
   \phantomsection{}% reset the anchor for hyperrefs
   \addcontentsline{toc}{section}{#1}%
-  \parbox[t]{\hintscolumnwidth}{\strut\raggedleft\raisebox{\baseletterheight}{\color{color1}\rule{\hintscolumnwidth}{0.95ex}}}%
-  \hspace{\separatorcolumnwidth}%
-  \parbox[t]{\maincolumnwidth}{\strut\sectionstyle{#1}}%
-  \par\nobreak\addvspace{1ex}\@afterheading}% to avoid a pagebreak after the heading
+  \strut\sectionstyle{#1}%
+  {\color{color1}\hrule}%
+  \par\nobreak\addvspace{1ex}\@afterheading}
 
+\newcommand{\subsectionfill}{\xleaders\hbox to 0.35em{\scriptsize.}\hfill}% different subsectionfills will not be perfectly aligned, but remaining space at the end of the fill will be distributed evenly between leaders, so it will be barely visible
 \renewcommand*{\subsection}[1]{%
   \par\addvspace{1ex}%
-  \phantomsection{}% reset the anchor for hyperrefs
+  \phantomsection{}%
   \addcontentsline{toc}{subsection}{#1}%
-  \begin{tabular}{@{}p{\hintscolumnwidth}@{\hspace{\separatorcolumnwidth}}p{\maincolumnwidth}@{}}%
- 	  \raggedleft\hintstyle{} &{\strut\subsectionstyle{#1}}%
-  \end{tabular}%
-  \par\nobreak\addvspace{0.5ex}\@afterheading}% to avoid a pagebreak after the heading
+  \strut\subsectionstyle{#1}{\color{color1}{\subsectionfill}}%
+  \par\nobreak\addvspace{0.5ex}\@afterheading}
 
 \renewcommand*{\cvitem}[3][.25em]{%
   \begin{tabular}{@{}p{\hintscolumnwidth}@{\hspace{\separatorcolumnwidth}}p{\maincolumnwidth}@{}}%
